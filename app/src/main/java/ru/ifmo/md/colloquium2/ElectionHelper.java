@@ -26,10 +26,10 @@ public class ElectionHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String createShopTable = "CREATE TABLE " + TABLE_NAME + " (" + COLUMN_ID +
+        String createTable = "CREATE TABLE " + TABLE_NAME + " (" + COLUMN_ID +
                 " INTEGER PRIMARY KEY, " + COLUMN_NAME + " TEXT NOT NULL, " +
                 COLUMN_COUNT + " INTEGER NOT NULL)";
-        db.execSQL(createShopTable);
+        db.execSQL(createTable);
     }
 
     @Override

@@ -19,6 +19,7 @@ public class MainActivity extends ActionBarActivity {
     //MyAdapter adapter;
     ElectionHelper helper;
     Intent intent;
+    boolean ended = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +35,9 @@ public class MainActivity extends ActionBarActivity {
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (!ended) {
+                    return;
+                }
                 String s = ((ArrayAdapter<String>)parent.getAdapter()).getItem(position);
                 Candidate cur = helper.getCandidate(position);
                 cur.count++;
@@ -67,6 +71,9 @@ public class MainActivity extends ActionBarActivity {
 
     public void onButtonClick(View view) {
         TextView text = (TextView)findViewById(R.id.editText);
+        if (text.getText().toString().equals("")) {
+            return;
+        }
         adapter.add(text.getText().toString());
         //adapter.add(new Candidate(adapter.getCount(), text.getText().toString(), 0));
         helper.addCandidate(new Candidate(adapter.getCount() - 1, text.getText().toString(), 0));
@@ -75,10 +82,12 @@ public class MainActivity extends ActionBarActivity {
 
     public void onButton2Click(View view) {
         ((Button)findViewById(R.id.button)).setEnabled(false);
+        ended = true;
     }
 
     public void onButton3Click(View view) {
         adapter.clear();
+        ended = false;
         ((Button)findViewById(R.id.button)).setEnabled(true);
         startActivity(intent);
     }
