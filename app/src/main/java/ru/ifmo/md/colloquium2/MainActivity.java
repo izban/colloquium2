@@ -1,17 +1,45 @@
 package ru.ifmo.md.colloquium2;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ListView;
+import android.widget.TextView;
 
 
 public class MainActivity extends ActionBarActivity {
+    ListView lv;
+    ArrayAdapter<String> adapter;
+    //MyAdapter adapter;
+    ElectionHelper helper;
+    Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        intent = new Intent(this, ResultActivity.class);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        helper = new ElectionHelper(this, ElectionHelper.DATABASE_NAME, null, 1);
+
+        lv = (ListView)findViewById(R.id.listView);
+        //adapter = new MyAdapter();
+        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
+        lv.setAdapter(adapter);
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String s = ((ArrayAdapter<String>)parent.getAdapter()).getItem(position);
+                Candidate cur = helper.getCandidate(position);
+                cur.count++;
+                helper.updateCandidate(cur);
+            }
+        });
     }
 
 
@@ -35,5 +63,23 @@ public class MainActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void onButtonClick(View view) {
+        TextView text = (TextView)findViewById(R.id.editText);
+        adapter.add(text.getText().toString());
+        //adapter.add(new Candidate(adapter.getCount(), text.getText().toString(), 0));
+        helper.addCandidate(new Candidate(adapter.getCount() - 1, text.getText().toString(), 0));
+        text.setText("");
+    }
+
+    public void onButton2Click(View view) {
+        ((Button)findViewById(R.id.button)).setEnabled(false);
+
+    }
+
+    public void onButton3Click(View view) {
+        adapter.clear();
+        ((Button)findViewById(R.id.button)).setEnabled(true);
     }
 }
