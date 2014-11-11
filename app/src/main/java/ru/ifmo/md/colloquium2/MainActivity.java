@@ -75,11 +75,11 @@ public class MainActivity extends ActionBarActivity {
 
     public void onButton2Click(View view) {
         ((Button)findViewById(R.id.button)).setEnabled(false);
-
     }
 
     public void onButton3Click(View view) {
         adapter.clear();
         ((Button)findViewById(R.id.button)).setEnabled(true);
+        startActivity(intent);
     }
 }

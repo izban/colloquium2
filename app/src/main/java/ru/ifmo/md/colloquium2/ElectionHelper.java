@@ -14,7 +14,7 @@ import java.util.ArrayList;
  */
 public class ElectionHelper extends SQLiteOpenHelper {
     public final static int DATABASE_VERSION = 1;
-    public final static String DATABASE_NAME = "elections";
+    public final static String DATABASE_NAME = "elections.db";
     public final static String TABLE_NAME = "elections";
     public final static String COLUMN_ID = "_id";
     public final static String COLUMN_NAME = "name";
@@ -45,7 +45,7 @@ public class ElectionHelper extends SQLiteOpenHelper {
         String query = "SELECT * FROM " + TABLE_NAME;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(query, null);
-        if(cursor.moveToFirst()) {
+        if (cursor.moveToFirst()) {
             do {
                 Candidate candidate = new Candidate();
                 candidate.id = (Integer.parseInt(cursor.getString(0)));
@@ -63,7 +63,6 @@ public class ElectionHelper extends SQLiteOpenHelper {
         cv.put(COLUMN_ID, candidate.id);
         cv.put(COLUMN_NAME, candidate.name);
         cv.put(COLUMN_COUNT, candidate.count);
-        Log.i("", cv.toString());
         Log.i("", candidate.toString());
         db.insert(TABLE_NAME, null, cv);
         db.close();
@@ -82,8 +81,11 @@ public class ElectionHelper extends SQLiteOpenHelper {
     public int updateCandidate(Candidate candidate) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
+        cv.put(COLUMN_ID, candidate.id);
         cv.put(COLUMN_NAME, candidate.name);
         cv.put(COLUMN_COUNT, candidate.count);
+        Log.i("", candidate.toString());
+        Log.i("", cv.toString());
         return db.update(TABLE_NAME, cv, COLUMN_ID + "=?", new String[] { String.valueOf(candidate.id) });
     }
 
@@ -104,5 +106,11 @@ public class ElectionHelper extends SQLiteOpenHelper {
     public Cursor getAllCursor() {
         SQLiteDatabase db = this.getReadableDatabase();
         return db.query(TABLE_NAME, null, null, null, null, null, null);
+    }
+
+    public void clear() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
+        db.close();
     }
 }
